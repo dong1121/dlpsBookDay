@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>取書紀錄展示</title>
+  <style>
+    body {
+      margin: 0;
+      background: url('bg_reading.jpg') no-repeat center center fixed;
+      background-size: cover;
+      overflow: hidden;
+    }
+    .danmaku {
+      position: absolute;
+      white-space: nowrap;
+      font-size: 30px;
+      color: white;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 4px 10px;
+      border-radius: 10px;
+      animation: move linear;
+    }
+    @keyframes move {
+      from { left: 100%; }
+      to { left: -100%; }
+    }
+  </style>
+</head>
+<body>
+  <script>
+    let danmakuData = [];
+    let danmakuIndex = 0;
+
+    function showOneDanmaku(text) {
+      const span = document.createElement('span');
+      span.className = 'danmaku';
+      span.textContent = text;
+
+      span.style.top = `${Math.random() * 90}%`;
+      const duration = (Math.random() * 10 + 20).toFixed(2);
+      span.style.animationDuration = `${duration}s`;
+
+      document.body.appendChild(span);
+
+      // 自動移除
+      setTimeout(() => {
+        span.remove();
+      }, duration * 1000);
+    }
+
+    function playDanmakuLoop() {
+      if (danmakuData.length === 0) return;
+
+      showOneDanmaku(danmakuData[danmakuIndex]);
+
+      danmakuIndex = (danmakuIndex + 1) % danmakuData.length;
+      setTimeout(playDanmakuLoop, 1000); // 每秒一筆，可調整間距
+    }
+
+    async function fetchData() {
+      const res = await fetch('https://script.google.com/macros/s/AKfycbxz2933ERLUKnLvxsrDDFomSLrOWX0fxgB5QzvFfyXdmqYsYwLiXacSISRNzfsiIl1y/exec');
+      const data = await res.json();
+      danmakuData = data;
+      danmakuIndex = 0;
+    }
+
+    // 第一次載入資料並開始播放
+    fetchData().then(playDanmakuLoop);
+
+    // 每3分鐘重新抓取資料
+    setInterval(fetchData, 180000);
+  </script>
+</body>
+</html>
