@@ -4,22 +4,35 @@
   <meta charset="UTF-8">
   <title>取書紀錄展示</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      background: url('bg_reading.jpg') no-repeat center center fixed;
-      background-size: cover;
+      padding: 0;
       overflow: hidden;
+      height: 100%;
     }
+
+    /* 背景圖固定鋪滿畫面 */
+    .bg-img {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+    }
+
     .danmaku {
       position: absolute;
       white-space: nowrap;
       font-size: 30px;
       color: white;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.2); /* 半透明黑底 */
       padding: 4px 10px;
       border-radius: 10px;
       animation: move linear;
     }
+
     @keyframes move {
       from { left: 100%; }
       to { left: -100%; }
@@ -27,6 +40,9 @@
   </style>
 </head>
 <body>
+  <!-- 背景圖 -->
+  <img src="bg_reading.jpg" class="bg-img" alt="背景圖">
+
   <script>
     let danmakuData = [];
     let danmakuIndex = 0;
@@ -37,12 +53,11 @@
       span.textContent = text;
 
       span.style.top = `${Math.random() * 90}%`;
-      const duration = (Math.random() * 10 + 20).toFixed(2);
+      const duration = (Math.random() * 5 + 20).toFixed(2); // 調慢彈幕速度
       span.style.animationDuration = `${duration}s`;
 
       document.body.appendChild(span);
 
-      // 自動移除
       setTimeout(() => {
         span.remove();
       }, duration * 1000);
@@ -54,7 +69,7 @@
       showOneDanmaku(danmakuData[danmakuIndex]);
 
       danmakuIndex = (danmakuIndex + 1) % danmakuData.length;
-      setTimeout(playDanmakuLoop, 1000); // 每秒一筆，可調整間距
+      setTimeout(playDanmakuLoop, 1000); // 每秒一筆
     }
 
     async function fetchData() {
@@ -64,11 +79,7 @@
       danmakuIndex = 0;
     }
 
-    // 第一次載入資料並開始播放
     fetchData().then(playDanmakuLoop);
-
-    // 每3分鐘重新抓取資料
-    setInterval(fetchData, 180000);
+    setInterval(fetchData, 180000); // 每3分鐘重新取得資料
   </script>
-</body>
-</html>
+</
