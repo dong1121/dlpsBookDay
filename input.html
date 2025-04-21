@@ -5,7 +5,27 @@
   <title>斗六國小世界閱讀日漂書活動-取書記錄/查詢</title>
   <style>
     body { font-family: sans-serif; text-align: center; padding: 50px; }
-    input, button { font-size: 20px; padding: 10px; width: 250px; }
+    
+	h1 {
+	  font-size: 36px;
+	}
+	
+	input {
+      font-size: 28px;
+      padding: 20px;
+      width: 80%;
+      max-width: 300px;
+      box-sizing: border-box;
+    }
+	
+	button {
+      font-size: 24px;
+      padding: 15px 30px;
+      margin-top: 20px;
+      width: 60%;
+      max-width: 200px;
+    }
+	
     #msg { margin-top: 20px; font-size: 48px; }
     #spinner {
       display: none;
@@ -24,8 +44,8 @@
   </style>
 </head>
 <body>
-  <h1>斗六國小世界閱讀日漂書活動-取書記錄/查詢</h1>
-  <input id="inputId" type="text" placeholder="請輸入4碼班級座號" maxlength="4" />
+  <h1>斗六國小<br>世界閱讀日<br>漂書活動<br>取書記錄/查詢</h1>
+  <input id="inputId" type="text" placeholder="請輸入4碼班級座號" maxlength="4" /><br>
   <button onclick="submit()">送出</button>
   <div id="spinner"></div>
   <div id="msg"></div>
