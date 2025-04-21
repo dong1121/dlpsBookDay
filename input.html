@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>斗六國小世界閱讀日漂書活動-取書記錄/查詢</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 50px; }
+    input, button { font-size: 20px; padding: 10px; width: 250px; }
+    #msg { margin-top: 20px; font-size: 48px; }
+    #spinner {
+      display: none;
+      margin: 20px auto;
+      width: 40px;
+      height: 40px;
+      border: 6px solid #ccc;
+      border-top: 6px solid #4caf50;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <h1>斗六國小世界閱讀日漂書活動-取書記錄/查詢</h1>
+  <input id="inputId" type="text" placeholder="請輸入4碼班級座號" maxlength="4" />
+  <button onclick="submit()">送出</button>
+  <div id="spinner"></div>
+  <div id="msg"></div>
+
+  <script>
+    function submit() {
+      const id = document.getElementById("inputId").value.trim();
+      const msgEl = document.getElementById("msg");
+      const spinner = document.getElementById("spinner");
+
+      if (!id) return;
+
+      msgEl.textContent = "";
+      spinner.style.display = "block";
+
+      fetch("https://script.google.com/macros/s/AKfycbxz2933ERLUKnLvxsrDDFomSLrOWX0fxgB5QzvFfyXdmqYsYwLiXacSISRNzfsiIl1y/exec", {
+        method: "POST",
+        body: new URLSearchParams({ id })
+      })
+      .then(res => res.text())
+      .then(msg => {
+        spinner.style.display = "none";
+        if (msg === "SUCCESS") {
+          msgEl.innerText = "成功記錄取書";
+          msgEl.style.color = "green";
+        } else if (msg === "FULL") {
+          msgEl.innerText = "已達取書上限";
+          msgEl.style.color = "red";
+        } else {
+          msgEl.innerText = "找不到資料";
+          msgEl.style.color = "gray";
+        }
+      })
+      .catch(() => {
+        spinner.style.display = "none";
+        msgEl.innerText = "發生錯誤，請稍後再試";
+        msgEl.style.color = "gray";
+      });
+    }
+  </script>
+</body>
+</html>
