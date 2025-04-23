@@ -94,7 +94,7 @@
 		if (danmakuData.length === 0) return;
 		showOneDanmaku(danmakuData[danmakuIndex]);
 		danmakuIndex = (danmakuIndex + 1) % danmakuData.length;
-		setTimeout(playDanmakuLoop, 1000);
+		setTimeout(playDanmakuLoop, 300);
 	  }
 
 	  async function fetchData() {
