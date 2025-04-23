@@ -68,6 +68,8 @@
       .then(res => res.text())
       .then(msg => {
         spinner.style.display = "none";
+	const inputBox = document.getElementById("inputId");
+	inputBox.value = "";  // ← 加這行清空輸入框
         if (msg === "SUCCESS") {
           msgEl.innerText = "成功記錄取書";
           msgEl.style.color = "green";
