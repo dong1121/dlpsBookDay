@@ -11,7 +11,6 @@
       height: 100%;
     }
 
-    /* 背景圖固定鋪滿畫面 */
     .bg-img {
       position: fixed;
       top: 0;
@@ -27,7 +26,7 @@
       white-space: nowrap;
       font-size: 30px;
       color: white;
-      background: rgba(0, 0, 0, 0.2); /* 半透明黑底 */
+      background: rgba(0, 0, 0, 0.2);
       padding: 4px 10px;
       border-radius: 10px;
       animation: move linear;
@@ -37,49 +36,82 @@
       from { left: 100%; }
       to { left: -100%; }
     }
+
+    #countdown {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      font-size: 18px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      z-index: 99;
+      font-family: sans-serif;
+    }
   </style>
 </head>
 <body>
   <!-- 背景圖 -->
   <img src="bg_reading.jpg" class="bg-img" alt="背景圖">
+  
+  <!-- 倒數計時 -->
+  <div id="countdown">距離下次更新：??秒</div>
 
-  <script>
-    let danmakuData = [];
-    let danmakuIndex = 0;
+	<script>
+	  const UPDATE_INTERVAL = 90; // ✅ 修改這一個數字即可（單位：秒）
 
-    function showOneDanmaku(text) {
-      const span = document.createElement('span');
-      span.className = 'danmaku';
-      span.textContent = text;
+	  let danmakuData = [];
+	  let danmakuIndex = 0;
+	  let countdown = UPDATE_INTERVAL;
+	  const countdownEl = document.getElementById('countdown');
 
-      span.style.top = `${Math.random() * 90}%`;
-      const duration = (Math.random() * 5 + 20).toFixed(2); // 調慢彈幕速度
-      span.style.animationDuration = `${duration}s`;
+	  function updateCountdownDisplay() {
+		countdownEl.textContent = `距離下次更新：${countdown}秒`;
+	  }
 
-      document.body.appendChild(span);
+	  function startCountdownTimer() {
+		updateCountdownDisplay();
+		setInterval(() => {
+		  countdown--;
+		  if (countdown < 0) countdown = 0;
+		  updateCountdownDisplay();
+		}, 1000);
+	  }
 
-      setTimeout(() => {
-        span.remove();
-      }, duration * 1000);
-    }
+	  function showOneDanmaku(text) {
+		const span = document.createElement('span');
+		span.className = 'danmaku';
+		span.textContent = text;
+		span.style.top = `${Math.random() * 90}%`;
+		const duration = (Math.random() * 5 + 20).toFixed(2);
+		span.style.animationDuration = `${duration}s`;
+		document.body.appendChild(span);
+		setTimeout(() => span.remove(), duration * 1000);
+	  }
 
-    function playDanmakuLoop() {
-      if (danmakuData.length === 0) return;
+	  function playDanmakuLoop() {
+		if (danmakuData.length === 0) return;
+		showOneDanmaku(danmakuData[danmakuIndex]);
+		danmakuIndex = (danmakuIndex + 1) % danmakuData.length;
+		setTimeout(playDanmakuLoop, 1000);
+	  }
 
-      showOneDanmaku(danmakuData[danmakuIndex]);
+	  async function fetchData() {
+		const res = await fetch('https://script.google.com/macros/s/AKfycbxz2933ERLUKnLvxsrDDFomSLrOWX0fxgB5QzvFfyXdmqYsYwLiXacSISRNzfsiIl1y/exec');
+		const data = await res.json();
+		danmakuData = data;
+		danmakuIndex = 0;
+		countdown = UPDATE_INTERVAL;
+		updateCountdownDisplay();
+	  }
 
-      danmakuIndex = (danmakuIndex + 1) % danmakuData.length;
-      setTimeout(playDanmakuLoop, 1000); // 每秒一筆
-    }
+	  fetchData().then(() => {
+		playDanmakuLoop();
+		startCountdownTimer();
+	  });
 
-    async function fetchData() {
-      const res = await fetch('https://script.google.com/macros/s/AKfycbxz2933ERLUKnLvxsrDDFomSLrOWX0fxgB5QzvFfyXdmqYsYwLiXacSISRNzfsiIl1y/exec');
-      const data = await res.json();
-      danmakuData = data;
-      danmakuIndex = 0;
-    }
-
-    fetchData().then(playDanmakuLoop);
-    setInterval(fetchData, 90000); // 每1.5分鐘重新取得資料
-  </script>
-</
+	  setInterval(fetchData, UPDATE_INTERVAL * 1000); // ✅ 自動更新間隔與倒數同步
+	</script>
+</body>
+</html>
