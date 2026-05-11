@@ -45,7 +45,7 @@
 </head>
 <body>
   <h1>斗六國小<br>世界閱讀日<br>漂書活動<br>取書記錄/查詢</h1>
-  <input id="inputId" type="text" placeholder="請輸入4碼班級座號" maxlength="4" /><br>
+  <input id="inputId" type="text" inputmode="numeric" pattern="\d*" placeholder="請輸入4碼班級座號" maxlength="4" /><br>
   <button onclick="submit()">送出</button>
   <div id="spinner"></div>
   <div id="msg"></div>
@@ -87,6 +87,14 @@
         msgEl.style.color = "gray";
       });
     }
+	
+	//監聽，只要輸入滿4個字元就自動送出
+	document.getElementById("inputId").addEventListener("input", function(e) {
+	  if (e.target.value.length === 4) {
+		// 稍微延遲 100 毫秒，讓使用者視覺上確認數字已輸入
+		setTimeout(submit, 100); 
+	  }
+	});
   </script>
 </body>
 </html>
